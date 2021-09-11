@@ -9,7 +9,7 @@ using Darkit.SQLite.Properties;
 namespace Darkit.SQLite
 {
     /// <summary>
-    /// 
+    /// 会话。
     /// </summary>
     public class SQLiteSession : IDisposable
     {
@@ -21,6 +21,12 @@ namespace Darkit.SQLite
             Connection = null;
         }
 
+        /// <summary>
+        /// 执行。
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public int Execute(string sql, params SQLiteParameter[] args)
         {
             using (SQLiteCommand command = NewCommand(sql, args))
@@ -29,6 +35,13 @@ namespace Darkit.SQLite
             }
         }
 
+        /// <summary>
+        /// 执行。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public int Execute<T>(string sql, T args)
         {
             return Execute(sql, args.GetType().GetProperties().Select(i => new SQLiteParameter
@@ -38,6 +51,13 @@ namespace Darkit.SQLite
             }));
         }
 
+        /// <summary>
+        /// 创建一个命令。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public SQLiteCommand NewCommand<T>(string sql, T args)
         {
             return NewCommand(sql, args.GetType().GetProperties().Select(i => new SQLiteParameter
@@ -47,6 +67,12 @@ namespace Darkit.SQLite
             }));
         }
 
+        /// <summary>
+        /// 创建命令。
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public SQLiteCommand NewCommand(string sql, params SQLiteParameter[] args)
         {
             EnsureConnection();
@@ -75,7 +101,7 @@ namespace Darkit.SQLite
         }
 
         /// <summary>
-        /// 
+        /// 确保连接。
         /// </summary>
         public void EnsureConnection()
         {
@@ -97,45 +123,12 @@ namespace Darkit.SQLite
             }
         }
 
+        /// <summary>
+        /// 回收资源。
+        /// </summary>
         public void Dispose()
         {
             Connection?.Dispose();
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public static class SQLiteDesignStatement
-    {
-        public static SQLiteDesign The(this SQLiteSession session, string table)
-        {
-            return new SQLiteDesign(session, table);
-        }
-
-        public static void Create(this SQLiteSession session, string table, params string[] definded)
-        {
-            string designs = string.Join(",", definded);
-            string sql = string.Format("CREATE TABLE {0} ({1})", table, designs);
-            session.Execute(sql);
-        }
-
-        public static void AddIndex(this SQLiteSession session, string table, string name, params string[] fields)
-        {
-            string field = string.Join(",", fields.Select(i => string.Format("[{0}]", i)).ToArray());
-            string sql = string.Format("CREATE INDEX {1} ON {0} ({2})", table, name, field);
-            session.Execute(sql);
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public static class SQLiteQueryStatement
-    {
-        public static SQLiteQuery From(this SQLiteSession session,  string table)
-        {
-            return new SQLiteQuery(session);
         }
     }
 }

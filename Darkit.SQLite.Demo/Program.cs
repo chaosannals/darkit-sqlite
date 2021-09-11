@@ -11,32 +11,14 @@ namespace Darkit.SQLite.Demo
         {
             using (SQLiteSession session = new SQLiteSession("demo.db"))
             {
-                session.The("tester")
-                    .Column(new SQLiteDesignColumn
-                    {
-                        Name = "id",
-                        Kind = SQLiteDesignColumnKind.INTEGER,
-                        IsPrimaryAutoIncrement = true,
-                    })
-                    .Column(new SQLiteDesignColumn
-                    {
-                        Name = "account",
-                        Kind = SQLiteDesignColumnKind.STRING,
-                    })
-                    .Column(new SQLiteDesignColumn
-                    {
-                        Name = "gender",
-                        Kind = SQLiteDesignColumnKind.INTEGER,
-                        DefaultValue = "0"
-                    })
-                    .Column(new SQLiteDesignColumn
-                    {
-                        Name = "create_at",
-                        Kind = SQLiteDesignColumnKind.DATETIME
-                    })
-                    .Unique("account")
-                    .Create();
-                session.From("tester");
+                session.CreateTable("tester", new string[]
+                {
+                    "id INTEGER NOT NULL",
+                    "account STRING NOT NULL",
+                    "gender INTEGER DEFAULT 0",
+                    "create_at DATETIME DEFAULT (datetime('now','localtime'))",
+                });
+                session.Create<DemoBook>();
             }
 
             Console.ReadKey();

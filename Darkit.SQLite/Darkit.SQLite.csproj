@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Darkit.Text, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Darkit.Text.1.0.0\lib\net35\Darkit.Text.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.114.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
@@ -47,14 +50,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\ColumnAttribute.cs" />
+    <Compile Include="Data\IndexAttribute.cs" />
+    <Compile Include="Data\KeyAttribute.cs" />
+    <Compile Include="Data\TableAttribute.cs" />
+    <Compile Include="Design\SQLiteDesign.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SQLiteDesign.cs" />
+    <Compile Include="Design\SQLiteDesignColumn.cs" />
+    <Compile Include="SQLiteDesignStatement.cs" />
     <Compile Include="SQLiteQuery.cs" />
     <Compile Include="SQLiteException.cs" />
+    <Compile Include="SQLiteQueryStatement.cs" />
     <Compile Include="SQLiteSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -73,6 +83,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SQLite.Interop.x86.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Query\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net20\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net20\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
