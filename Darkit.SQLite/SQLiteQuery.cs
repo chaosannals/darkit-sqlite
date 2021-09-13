@@ -5,24 +5,15 @@ using System.Text;
 
 namespace Darkit.SQLite
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class SQLiteQueryException : SQLiteException
+    public partial class SQLiteQuery
     {
-        public SQLiteQueryException(string message) : base(message) { }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class SQLiteQuery
-    {
+        public string Table { get; private set; }
         public SQLiteSession Session { get; private set; }
 
-        public SQLiteQuery(SQLiteSession session)
+        public SQLiteQuery(SQLiteSession session, string table)
         {
             Session = session;
+            Table = table;
         }
 
         public SQLiteQuery Where(string condition)
@@ -34,63 +25,48 @@ namespace Darkit.SQLite
     /// <summary>
     /// 
     /// </summary>
-    public static class SQLiteSelectStatement
+    public partial class SQLiteQuery<T> where T : class
     {
-        public static IEnumerable<T> Select<T>(this SQLiteQuery query, params string[] fields)
+        public SQLiteSession Session { get; private set; }
+
+        public SQLiteQuery(SQLiteSession session)
         {
-            yield return default(T);
+            Session = session;
         }
 
-        public static IEnumerable<T> Select<T, F>(this SQLiteQuery query, F fields)
+        public SQLiteQuery<T, J1> Join<J1>(Func<J1, bool> condition, string alias = null)
         {
-            yield return default(T);
+            return new SQLiteQuery<T, J1>(Session);
         }
 
-        public static IEnumerable<Dictionary<string, object>> Select(this SQLiteQuery query, params string[] fields)
+        public SQLiteQuery<T> Where(Func<T, bool> condition)
         {
-            return new List<Dictionary<string, object>>();
-        }
-
-        public static T Find<T>(this SQLiteQuery query, params string[] fields)
-        {
-            return default(T);
-        }
-
-        public static bool Has(this SQLiteQuery query)
-        {
-            return false;
+            return this;
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public static class SQLiteInsertStatement
+    public partial class SQLiteQuery<T, J1> : SQLiteQuery<T> where T : class
     {
-        public static void Insert<T>(this SQLiteQuery query, IEnumerable<T> data)
-        {
+        internal SQLiteQuery(SQLiteSession session):base(session) { }
 
+        public SQLiteQuery<T, J1, J2> Join<J2>(Func<T, J1, J2, bool> condition, string alias=null)
+        {
+            return new SQLiteQuery<T, J1, J2>(Session);
         }
 
-        public static void Add<T>(this SQLiteQuery query, T data)
+        public SQLiteQuery<T, J1> Where(Func<T, J1, bool> condition)
         {
-
+            return this;
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public static class SQLiteUpdateStatement
+    public partial class SQLiteQuery<T, J1, J2> : SQLiteQuery<T, J1> where T: class
     {
-        public static int Update<T>(this SQLiteQuery query, T one)
-        {
-            return 0;
-        }
+        internal SQLiteQuery(SQLiteSession session) : base(session) { }
 
-        public static void Update<T>(this SQLiteQuery query, IEnumerable<T> data)
+        public SQLiteQuery<T, J1, J2> Where(Func<T, J1, J2, bool> condition)
         {
-
+            return this;
         }
     }
 }

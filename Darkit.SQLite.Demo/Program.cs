@@ -1,15 +1,21 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Darkit.SQLite.Design;
 
 namespace Darkit.SQLite.Demo
 {
     class Program
     {
-        static void Main(string[] args)
+        static void CreateDB(string dbpath)
         {
-            using (SQLiteSession session = new SQLiteSession("demo.db"))
+            if (File.Exists(dbpath))
+            {
+                File.Delete(dbpath);
+            }
+            using (SQLiteSession session = new SQLiteSession(dbpath))
             {
                 session.CreateTable("tester", new string[]
                 {
@@ -20,7 +26,18 @@ namespace Darkit.SQLite.Demo
                 });
                 session.Create<DemoBook>();
             }
+        }
 
+        static void Main(string[] args)
+        {
+            string dbpath = "demo.db";
+            CreateDB(dbpath);
+
+            using (SQLiteSession session = new SQLiteSession(dbpath))
+            {
+
+            }
+            
             Console.ReadKey();
         }
     }

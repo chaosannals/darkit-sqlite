@@ -123,6 +123,16 @@ namespace Darkit.SQLite
             }
         }
 
+        public SQLiteQuery From(string table)
+        {
+            return new SQLiteQuery(this, table);
+        }
+
+        public SQLiteQuery<T> From<T>() where T : class
+        {
+            return new SQLiteQuery<T>(this);
+        }
+
         /// <summary>
         /// 回收资源。
         /// </summary>

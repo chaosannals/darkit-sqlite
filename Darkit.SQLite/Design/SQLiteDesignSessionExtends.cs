@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Data.SQLite;
+using Darkit.Text;
 using Darkit.SQLite.Data;
 using Darkit.SQLite.Design;
 
-namespace Darkit.SQLite
+namespace Darkit.SQLite.Design
 {
     /// <summary>
     /// 
     /// </summary>
-    public static class SQLiteDesignStatement
+    public static class SQLiteDesignSessionExtends
     {
         /// <summary>
         /// 创建
@@ -22,9 +23,9 @@ namespace Darkit.SQLite
         {
             Type type = typeof(T);
             SQLiteDesign design = new SQLiteDesign();
+            design.TableType = type;
             foreach (object a in type.GetCustomAttributes(true))
             {
-                Console.WriteLine(a);
                 if (a is TableAttribute ta)
                 {
                     design.Table = ta;
@@ -40,10 +41,25 @@ namespace Darkit.SQLite
             }
             foreach (PropertyInfo pi in type.GetProperties())
             {
-                Console.WriteLine(pi.Name);
-                design.Columns.Add(SQLiteDesignColumn.Parse(pi));
+                SQLiteDesignColumn column = SQLiteDesignColumn.Parse(pi);
+                if (design.Table != null)
+                {
+                    column.Name = column.Name.ToCase(design.Table.ColumnCase);
+                }
+                if (design.Key != null && design.Key.IsAutoIncrement && column.Name == design.Key.Columns[0])
+                {
+                    column.IsPrimaryAutoIncrement = true;
+                }
+                design.Columns.Add(column);
             }
 
+            string table = design.GetTableName();
+            session.CreateTable(table, design.GetDefinitions());
+            foreach (IndexAttribute ia in design.Indexes)
+            {
+                string isql = ia.ToSQL(table);
+                session.Execute(isql);
+            }
         }
 
         /// <summary>
@@ -66,11 +82,12 @@ namespace Darkit.SQLite
         /// <param name="table"></param>
         /// <param name="name"></param>
         /// <param name="fields"></param>
-        public static void CreateIndex(this SQLiteSession session, string table, string name, bool isUnique, params string[] fields)
+        public static void CreateIndex(this SQLiteSession session, string table, string name, bool isUnique, string column, params string[] columns)
         {
-            string field = string.Join(",", fields.Select(i => string.Format("[{0}]", i)).ToArray());
-            string flag = isUnique ? "UNIQUE" : string.Empty;
-            string sql = $"CREATE {flag} INDEX {name} ON {table} ({field})";
+            IndexAttribute ia = new IndexAttribute(column, columns);
+            ia.Name = name;
+            ia.IsUnique = isUnique;
+            string sql = ia.ToSQL(table);
             session.Execute(sql);
         }
 

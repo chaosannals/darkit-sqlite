@@ -37,12 +37,14 @@ namespace Darkit.SQLite.Design
         public static SQLiteDesignColumn Parse(PropertyInfo pi)
         {
             SQLiteDesignColumn result = new SQLiteDesignColumn();
+            result.Name = pi.Name;
+            result.IsNotNull = false;
             foreach (object a in pi.GetCustomAttributes(true))
             {
                 if (a is ColumnAttribute ca)
                 {
                     result.Name = ca.Name ?? pi.Name;
-                    result.IsNotNull = ca.IsNotNull;
+                    result.IsNotNull = ca.NullStatus ?? result.IsPrimaryAutoIncrement;
                     break;
                 }
             }
@@ -63,6 +65,10 @@ namespace Darkit.SQLite.Design
             else if (new Type[] { typeof(DateTime), typeof(DateTime?) }.Contains(pi.PropertyType))
             {
                 result.Kind = "DATETIME";
+            }
+            else if (new Type[] { typeof(decimal), typeof(float), typeof(double), typeof(decimal?), typeof(float?), typeof(double?) }.Contains(pi.PropertyType))
+            {
+                result.Kind = "NUMERIC";
             }
             return result;
         }

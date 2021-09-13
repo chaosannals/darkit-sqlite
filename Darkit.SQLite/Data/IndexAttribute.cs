@@ -19,5 +19,12 @@ namespace Darkit.SQLite.Data
             Name = string.Join("_", Columns.Select(c => c.ToUpper()).ToArray()) + "_INDEX";
             IsUnique = false;
         }
+
+        public string ToSQL(string table)
+        {
+            string field = string.Join(",", Columns.Select(i => string.Format("[{0}]", i)).ToArray());
+            string flag = IsUnique ? "UNIQUE" : string.Empty;
+            return $"CREATE {flag} INDEX {Name} ON {table} ({field})";
+        }
     }
 }

@@ -10,13 +10,26 @@ namespace Darkit.SQLite.Data
     {
         public string Name { get; set; }
         public string Default { get; set; }
-        public bool IsNotNull { get; set; }
+        public bool IsNotNull { get { return isNotNull; } set { isSetNotNull = true; isNotNull = value; } }
+
+        public bool? NullStatus
+        {
+            get
+            {
+                if (isSetNotNull) return isNotNull;
+                return null;
+            }
+        }
+
+        private bool isNotNull;
+        private bool isSetNotNull;
 
         public ColumnAttribute()
         {
             Name = null;
             Default = null;
-            IsNotNull = true;
+            IsNotNull = false;
+            isSetNotNull = false;
         }
     }
 }
