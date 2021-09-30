@@ -66,7 +66,7 @@
     <Compile Include="Design\SQLiteDesignSessionExtends.cs" />
     <Compile Include="Query\SQLiteSelectStatement.cs" />
     <Compile Include="Query\SQLiteUpdateStatement.cs" />
-    <Compile Include="SQLiteQuery.cs" />
+    <Compile Include="Query\SQLiteQuery.cs" />
     <Compile Include="SQLiteException.cs" />
     <Compile Include="SQLiteSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

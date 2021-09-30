@@ -35,7 +35,11 @@ namespace Darkit.SQLite.Demo
 
             using (SQLiteSession session = new SQLiteSession(dbpath))
             {
-
+                session.From<DemoBook>()
+                    .Add(new DemoBook
+                    {
+                        Name = "Book Foo"
+                    });
             }
             
             Console.ReadKey();

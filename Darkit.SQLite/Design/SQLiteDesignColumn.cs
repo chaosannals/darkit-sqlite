@@ -6,6 +6,9 @@ using Darkit.SQLite.Data;
 
 namespace Darkit.SQLite.Design
 {
+    /// <summary>
+    /// 表设计列信息
+    /// </summary>
     public class SQLiteDesignColumn
     {
         public string Name { get; set; }
@@ -14,7 +17,10 @@ namespace Darkit.SQLite.Design
         public bool IsNotNull { get; set; }
         public bool IsPrimaryAutoIncrement { get; set; }
 
-
+        /// <summary>
+        /// 生成 SQL 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             List<string> infos = new List<string> { string.Format("[{0}] {1}", Name, Kind) };
@@ -34,6 +40,11 @@ namespace Darkit.SQLite.Design
             return string.Join(" ", infos.ToArray());
         }
 
+        /// <summary>
+        /// 解析属性信息获取列信息。（不完整，还有部分信息从总体上获取）
+        /// </summary>
+        /// <param name="pi"></param>
+        /// <returns></returns>
         public static SQLiteDesignColumn Parse(PropertyInfo pi)
         {
             SQLiteDesignColumn result = new SQLiteDesignColumn();

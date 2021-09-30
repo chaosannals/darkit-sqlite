@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Darkit.SQLite.Query
 {
+    /// <summary>
+    /// 查询请求
+    /// </summary>
     public partial class SQLiteQuery
     {
         public IEnumerable<T> Select<T>(params string[] fields)
@@ -31,5 +34,10 @@ namespace Darkit.SQLite.Query
         {
             return false;
         }
+    }
+
+    public partial class SQLiteQuery<T>
+    {
+
     }
 }

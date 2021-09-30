@@ -6,6 +6,9 @@ using Darkit.SQLite.Data;
 
 namespace Darkit.SQLite.Design
 {
+    /// <summary>
+    /// 表设计基类
+    /// </summary>
     public class SQLiteDesign
     {
         public Type TableType { get; set; }

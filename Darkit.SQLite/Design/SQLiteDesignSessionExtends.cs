@@ -10,7 +10,7 @@ using Darkit.SQLite.Design;
 namespace Darkit.SQLite.Design
 {
     /// <summary>
-    /// 
+    /// 表设计相关会话扩展方法
     /// </summary>
     public static class SQLiteDesignSessionExtends
     {

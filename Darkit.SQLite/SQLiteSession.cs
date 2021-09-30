@@ -5,6 +5,7 @@ using System.IO;
 using System.Data;
 using System.Data.SQLite;
 using Darkit.SQLite.Properties;
+using Darkit.SQLite.Query;
 
 namespace Darkit.SQLite
 {
